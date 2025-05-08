@@ -19,7 +19,7 @@ const SignUpPage = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [needsConfirmation, setNeedsConfirmation] = useState(false);
-  const { signUp } = useAuth(); // Corrigido de signup para signUp
+  const { signUp, processSession } = useAuth(); // Corrigido de signup para signUp
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -35,28 +35,31 @@ const SignUpPage = () => {
       setIsLoading(false);
       return;
     }
-    
+
     if (password.length < 6) {
-       setError('A senha deve ter pelo menos 6 caracteres.');
-       toast({ title: "Erro no Cadastro", description: "A senha deve ter pelo menos 6 caracteres.", variant: "destructive" });
-       setIsLoading(false);
-       return;
+      setError('A senha deve ter pelo menos 6 caracteres.');
+      toast({ title: "Erro no Cadastro", description: "A senha deve ter pelo menos 6 caracteres.", variant: "destructive" });
+      setIsLoading(false);
+      return;
     }
 
     const result = signUp(email, password, { name, username }); // Corrigido de signup para signUp
+    if (result.session) {
+      await processSession(result.session, false); // atualiza os dados no contexto
+    }
     setIsLoading(false);
 
     if (result.success) {
       if (result.needsConfirmation) {
         setNeedsConfirmation(true);
-        toast({ 
-          title: "Cadastro quase completo!", 
+        toast({
+          title: "Cadastro quase completo!",
           description: "Enviamos um e-mail de confirmação. Por favor, verifique sua caixa de entrada (e spam).",
-          duration: 10000 
+          duration: 10000
         });
       } else {
         toast({ title: "Cadastro realizado com sucesso!", description: `Bem-vindo, ${name || username}!` });
-        navigate('/'); 
+        navigate('/');
       }
     } else {
       setError(result.message || 'Ocorreu um erro desconhecido.');
@@ -76,8 +79,8 @@ const SignUpPage = () => {
           <Card>
             <CardHeader className="text-center">
               <div className="flex justify-center items-center gap-2 mb-4">
-                 <Film className="h-8 w-8 text-primary" />
-                 <CardTitle className="text-3xl">Cineza</CardTitle>
+                <Film className="h-8 w-8 text-primary" />
+                <CardTitle className="text-3xl">Cineza</CardTitle>
               </div>
               <CardDescription>Confirme seu E-mail</CardDescription>
             </CardHeader>
@@ -86,22 +89,22 @@ const SignUpPage = () => {
               <p>Por favor, verifique sua caixa de entrada (e a pasta de spam) e clique no link para ativar sua conta.</p>
               <p>Após confirmar, você poderá <Link to="/login" className="text-primary hover:underline">fazer login</Link>.</p>
             </CardContent>
-             <CardFooter className="flex flex-col items-center text-sm">
-                <p>Não recebeu o e-mail?</p>
-                <Button variant="link" onClick={async () => {
-                  toast({ title: "Reenviando e-mail...", description: "Aguarde um momento."});
-                  // Adicionar lógica de reenviar email se necessário.
-                  // Por enquanto, apenas um placeholder.
-                  // Idealmente, você teria uma função no AuthContext para isso.
-                  // Ex: await resendConfirmationEmail(email);
-                  // Por agora, vamos simular um reenvio.
-                  setTimeout(() => {
-                     toast({ title: "E-mail de confirmação reenviado!", description: "Verifique sua caixa de entrada."});
-                  }, 2000);
-                }} className="px-0">
-                  Reenviar e-mail de confirmação
-                </Button>
-             </CardFooter>
+            <CardFooter className="flex flex-col items-center text-sm">
+              <p>Não recebeu o e-mail?</p>
+              <Button variant="link" onClick={async () => {
+                toast({ title: "Reenviando e-mail...", description: "Aguarde um momento." });
+                // Adicionar lógica de reenviar email se necessário.
+                // Por enquanto, apenas um placeholder.
+                // Idealmente, você teria uma função no AuthContext para isso.
+                // Ex: await resendConfirmationEmail(email);
+                // Por agora, vamos simular um reenvio.
+                setTimeout(() => {
+                  toast({ title: "E-mail de confirmação reenviado!", description: "Verifique sua caixa de entrada." });
+                }, 2000);
+              }} className="px-0">
+                Reenviar e-mail de confirmação
+              </Button>
+            </CardFooter>
           </Card>
         </motion.div>
       </div>
@@ -119,10 +122,10 @@ const SignUpPage = () => {
       >
         <Card>
           <CardHeader className="text-center">
-             <div className="flex justify-center items-center gap-2 mb-4">
-               <Film className="h-8 w-8 text-primary" />
-               <CardTitle className="text-3xl">Cineza</CardTitle>
-             </div>
+            <div className="flex justify-center items-center gap-2 mb-4">
+              <Film className="h-8 w-8 text-primary" />
+              <CardTitle className="text-3xl">Cineza</CardTitle>
+            </div>
             <CardDescription>Crie sua conta</CardDescription>
           </CardHeader>
           <CardContent>
@@ -195,10 +198,10 @@ const SignUpPage = () => {
             </form>
           </CardContent>
           <CardFooter className="flex flex-col items-center text-sm">
-             <p>Já tem uma conta?</p>
-             <Button variant="link" asChild className="px-0" disabled={isLoading}>
-               <Link to="/login">Faça login</Link>
-             </Button>
+            <p>Já tem uma conta?</p>
+            <Button variant="link" asChild className="px-0" disabled={isLoading}>
+              <Link to="/login">Faça login</Link>
+            </Button>
           </CardFooter>
         </Card>
       </motion.div>
