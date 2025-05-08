@@ -43,7 +43,7 @@ const SignUpPage = () => {
        return;
     }
 
-    const result = await signUp(email, password, { name, username }); // Corrigido de signup para signUp
+    const result = signUp(email, password, { name, username }); // Corrigido de signup para signUp
     setIsLoading(false);
 
     if (result.success) {
