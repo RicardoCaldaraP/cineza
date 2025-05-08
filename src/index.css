@@ -1,0 +1,116 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 72.2% 50.6%; /* Azul padrão */
+    --primary-foreground: 0 85.7% 97.3%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%; /* Vermelho para destrutivo */
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 72.2% 50.6%;
+    --radius: 0.5rem;
+
+    /* Cores para destaque (vermelho) */
+    --highlight-red: 0 84.2% 60.2%; /* Exemplo: Vermelho vivo */
+    --highlight-red-foreground: 0 0% 100%;
+  }
+
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 72.2% 50.6%;
+    --primary-foreground: 0 85.7% 97.3%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 72.2% 50.6%;
+  }
+}
+ 
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, 
+    theme('colors.slate.800') 25%, 
+    theme('colors.slate.700') 50%, 
+    theme('colors.slate.800') 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* React Image Crop styles */
+.ReactCrop__crop-selection {
+  border: 2px dashed rgba(255, 255, 255, 0.7);
+  box-shadow: 0 0 0 9999em rgba(0, 0, 0, 0.5);
+}
+
+.ReactCrop__image {
+  max-height: 70vh;
+}
+
+.ReactCrop--circular-crop .ReactCrop__crop-selection {
+  border-radius: 50%;
+  box-shadow: 0px 0px 1px 1px white, 0 0 0 9999em rgba(0, 0, 0, 0.5);
+}
+
+/* Navbar item styling */
+@layer components {
+  .nav-item {
+    @apply flex items-center gap-3 p-3 rounded-md transition-colors duration-150 ease-in-out text-sm font-medium;
+    @apply md:justify-start justify-center;
+  }
+  /* 
+    A regra abaixo foi removida pois causava dependência circular.
+    A classe 'md:inline' já é uma utilitária do Tailwind e será aplicada diretamente no HTML.
+    .nav-item .md\:inline { 
+      @apply md:inline; 
+    }
+  */
+  .nav-item.active {
+    @apply bg-destructive/80 text-destructive-foreground;
+  }
+  .nav-item:not(.active):hover {
+    @apply bg-accent text-accent-foreground;
+  }
+}
