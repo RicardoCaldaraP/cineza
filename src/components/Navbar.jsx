@@ -29,8 +29,8 @@ const Navbar = () => {
 
   const navItems = [
     { icon: Home, label: 'Início', path: '/', requiresAuth: true },
-    { icon: PlusSquare, label: 'Postar', path: '/post', requiresAuth: true },
     { icon: Search, label: 'Explorar', path: '/explore', requiresAuth: true },
+    { icon: PlusSquare, label: 'Postar', path: '/post', requiresAuth: true },
     { icon: Film, label: 'Minha Lista', path: '/watchlist', requiresAuth: true },
     { 
       icon: User, 
