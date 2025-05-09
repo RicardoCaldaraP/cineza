@@ -26,7 +26,7 @@ const SignUpPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setIsLoading(true);
+    //setIsLoading(true);
     setNeedsConfirmation(false);
 
     if (password !== confirmPassword) {
