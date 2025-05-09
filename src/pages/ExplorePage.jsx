@@ -20,8 +20,8 @@ import {
 
 const ExplorePage = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeTab, setActiveTab] = useState('movies');
-
+  const [activeTab, setActiveTab] = useState('movies'); 
+  
   const [popularMovies, setPopularMovies] = useState([]);
   const [popularTVShows, setPopularTVShows] = useState([]);
   const [discoveredUsers, setDiscoveredUsers] = useState([]);
@@ -44,7 +44,7 @@ const ExplorePage = () => {
   const [movieGenres, setMovieGenres] = useState([]);
   const [tvGenres, setTvGenres] = useState([]);
   const [selectedGenreIds, setSelectedGenreIds] = useState([]);
-
+  
   const observer = useRef();
 
   const lastMovieElementRef = useCallback(node => {
@@ -89,7 +89,7 @@ const ExplorePage = () => {
       fetchInitialData(tab, 1, genres);
     } else if (tab === 'users') {
       setDiscoveredUsers([]);
-      fetchInitialData(tab, 1);
+      fetchInitialData(tab, 1); 
     }
   }
 
@@ -110,7 +110,7 @@ const ExplorePage = () => {
         setHasMoreTV(tvRes.results.length > 0 && tvRes.totalPages > page);
         setCurrentPageTV(page);
       } else if (currentTab === 'users') {
-        const usersRes = await supabase.from('users').select('id, username, name, avatar_url, bio').limit(12 * page).range((page - 1) * 12, page * 12 - 1);
+        const usersRes = await supabase.from('users').select('id, username, name, avatar_url, bio').limit(12 * page).range((page - 1) * 12, page * 12 -1);
         setDiscoveredUsers(prev => page === 1 ? usersRes.data : [...prev, ...(usersRes.data || [])]);
       }
     } catch (error) {
@@ -122,7 +122,7 @@ const ExplorePage = () => {
       setIsLoadingMore(false);
     }
   }, []);
-
+  
   useEffect(() => {
     fetchGenres();
     resetAndFetchInitial('movies', selectedGenreIds);
@@ -148,22 +148,16 @@ const ExplorePage = () => {
     }
 
     if (page === 1) setIsLoadingSearch(true); else setIsLoadingMore(true);
-
+    
     try {
       if (activeTab === 'movies' || activeTab === 'tv') {
         let results, totalPages;
         if (isSearching) {
-          const tmdbRes = await searchTMDB(searchQuery.trim(), page);
+          const tmdbRes = await searchTMDB(searchQuery.trim(), page, activeTab); // <- passa 'movie' ou 'tv'
           results = tmdbRes.results;
-
-          // Só filtra por media_type se vier no resultado
-          if (results.length > 0 && results[0].media_type) {
-            results = results.filter(item => item.media_type === activeTab);
-          }
-
           totalPages = tmdbRes.totalPages;
         }
-        else { // Filtering by genre, no search query
+         else { // Filtering by genre, no search query
           const popularRes = await getPopularTMDB(activeTab, page, selectedGenreIds);
           results = popularRes.results;
           totalPages = popularRes.totalPages;
@@ -172,7 +166,7 @@ const ExplorePage = () => {
         if (selectedGenreIds.length > 0 && isSearching) { // Client-side filter if searching AND genre filtering
           results = results.filter(item => selectedGenreIds.every(gid => item.genre_ids.includes(gid)));
         }
-
+        
         if (activeTab === 'movies') {
           setSearchResultsMovies(prev => page === 1 ? results : [...prev, ...results]);
           setHasMoreMovies(results.length > 0 && totalPages > page);
@@ -183,12 +177,12 @@ const ExplorePage = () => {
           setCurrentPageTV(page);
         }
       }
-
-      if (activeTab === 'users' && isSearching) {
-        const usersRes = await supabase.from('users').select('id, username, name, avatar_url, bio').or(`username.ilike.%${searchQuery.trim()}%,name.ilike.%${searchQuery.trim()}%`).limit(12).range((page - 1) * 12, page * 12 - 1);
+      
+      if (activeTab === 'users' && isSearching) { 
+        const usersRes = await supabase.from('users').select('id, username, name, avatar_url, bio').or(`username.ilike.%${searchQuery.trim()}%,name.ilike.%${searchQuery.trim()}%`).limit(12).range((page - 1) * 12, page * 12 -1);
         setSearchResultsUsers(prev => page === 1 ? usersRes.data : [...prev, ...(usersRes.data || [])]);
       } else if (activeTab === 'users' && !isSearching) {
-        setSearchResultsUsers([]);
+         setSearchResultsUsers([]);
       }
 
     } catch (error) {
@@ -213,8 +207,8 @@ const ExplorePage = () => {
       resetAndFetchInitial(activeTab, selectedGenreIds);
     }
   }, [searchQuery, selectedGenreIds, activeTab]);
-
-
+  
+  
   const loadMoreItems = (tab) => {
     if (isLoadingMore) return;
     setIsLoadingMore(true);
@@ -252,14 +246,14 @@ const ExplorePage = () => {
   };
 
   const handleGenreToggle = (genreId) => {
-    setSelectedGenreIds(prev =>
+    setSelectedGenreIds(prev => 
       prev.includes(genreId) ? prev.filter(id => id !== genreId) : [...prev, genreId]
     );
   };
-
-  const containerVariants = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.05 } } };
+  
+  const containerVariants = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.05 } }};
   const itemVariants = { hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } };
-
+  
   const renderSkeletons = (count = 6, type = 'movie') => (
     <div className={`grid grid-cols-1 ${type === 'user' ? 'sm:grid-cols-2 md:grid-cols-3' : 'sm:grid-cols-2 md:grid-cols-3'} gap-6`}>
       {[...Array(count)].map((_, i) => (
@@ -275,17 +269,17 @@ const ExplorePage = () => {
       ))}
     </div>
   );
-
+  
   const isSearchingOrFiltering = searchQuery.trim().length >= 2 || selectedGenreIds.length > 0;
   const moviesToDisplay = isSearchingOrFiltering ? searchResultsMovies : popularMovies;
   const tvToDisplay = isSearchingOrFiltering ? searchResultsTV : popularTVShows;
-  const usersToDisplay = searchQuery.trim().length >= 2 ? searchResultsUsers : discoveredUsers;
+  const usersToDisplay = searchQuery.trim().length >=2 ? searchResultsUsers : discoveredUsers;
 
   let currentInitialLoadingState = false;
   if (activeTab === 'movies') currentInitialLoadingState = isLoadingMovies && moviesToDisplay.length === 0;
   else if (activeTab === 'tv') currentInitialLoadingState = isLoadingTV && tvToDisplay.length === 0;
   else if (activeTab === 'users') currentInitialLoadingState = isLoadingUsers && usersToDisplay.length === 0;
-
+  
   const showLoadMoreButton = (activeTab === 'movies' && hasMoreMovies && moviesToDisplay.length > 0 && !isLoadingMore) || (activeTab === 'tv' && hasMoreTV && tvToDisplay.length > 0 && !isLoadingMore);
 
   const genresForCurrentTab = activeTab === 'movies' ? movieGenres : tvGenres;
@@ -295,7 +289,7 @@ const ExplorePage = () => {
       <motion.h1 className="text-3xl font-bold mb-8 text-foreground" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4 }}>
         Explorar Cineza
       </motion.h1>
-
+      
       <div className="flex flex-col md:flex-row gap-4 mb-4">
         <div className="relative flex-grow">
           <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
@@ -342,20 +336,20 @@ const ExplorePage = () => {
           </div>
         )}
       </div>
-
+      
       <Tabs defaultValue="movies" value={activeTab} onValueChange={handleTabChange} className="mb-6">
         <TabsList className="w-full grid grid-cols-3 md:w-auto md:inline-flex">
           <TabsTrigger value="movies" className="flex items-center gap-2 text-sm"><Film className="h-4 w-4" />Filmes</TabsTrigger>
           <TabsTrigger value="tv" className="flex items-center gap-2 text-sm"><Tv className="h-4 w-4" />Séries</TabsTrigger>
           <TabsTrigger value="users" className="flex items-center gap-2 text-sm"><Users className="h-4 w-4" />Usuários</TabsTrigger>
         </TabsList>
-
+        
         <TabsContent value="movies" className="mt-6">
           {(isLoadingSearch || currentInitialLoadingState) ? renderSkeletons(6, 'movie') : moviesToDisplay.length > 0 ? (
             <motion.div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-8" variants={containerVariants} initial="hidden" animate="visible">
               {moviesToDisplay.map((movie, index) => {
                 if (moviesToDisplay.length === index + 1 && (hasMoreMovies || (isSearchingOrFiltering && hasMoreMovies))) {
-                  return <motion.div ref={lastMovieElementRef} variants={itemVariants} key={`explore-movie-${movie.tmdb_id || movie.id}`}><MovieCard movie={movie} isTMDB={true} compact /></motion.div>;
+                   return <motion.div ref={lastMovieElementRef} variants={itemVariants} key={`explore-movie-${movie.tmdb_id || movie.id}`}><MovieCard movie={movie} isTMDB={true} compact /></motion.div>;
                 }
                 return <motion.div variants={itemVariants} key={`explore-movie-${movie.tmdb_id || movie.id}`}><MovieCard movie={movie} isTMDB={true} compact /></motion.div>;
               })}
@@ -364,14 +358,14 @@ const ExplorePage = () => {
             <div className="text-center py-12"><Film className="mx-auto h-16 w-16 text-muted-foreground mb-4" /><p className="text-xl text-muted-foreground">Nenhum filme encontrado.</p>{(searchQuery || selectedGenreIds.length > 0) && <p className="text-sm text-muted-foreground">Tente uma busca ou filtro diferente.</p>}</div>
           )}
         </TabsContent>
-
+        
         <TabsContent value="tv" className="mt-6">
           {(isLoadingSearch || currentInitialLoadingState) ? renderSkeletons(6, 'tv') : tvToDisplay.length > 0 ? (
             <motion.div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-8" variants={containerVariants} initial="hidden" animate="visible">
               {tvToDisplay.map((tvShow, index) => {
-                if (tvToDisplay.length === index + 1 && (hasMoreTV || (isSearchingOrFiltering && hasMoreTV))) {
-                  return <motion.div ref={lastMovieElementRef} variants={itemVariants} key={`explore-tv-${tvShow.tmdb_id || tvShow.id}`}><MovieCard movie={tvShow} isTMDB={true} compact /></motion.div>;
-                }
+                 if (tvToDisplay.length === index + 1 && (hasMoreTV || (isSearchingOrFiltering && hasMoreTV))) {
+                   return <motion.div ref={lastMovieElementRef} variants={itemVariants} key={`explore-tv-${tvShow.tmdb_id || tvShow.id}`}><MovieCard movie={tvShow} isTMDB={true} compact /></motion.div>;
+                 }
                 return <motion.div variants={itemVariants} key={`explore-tv-${tvShow.tmdb_id || tvShow.id}`}><MovieCard movie={tvShow} isTMDB={true} compact /></motion.div>;
               })}
             </motion.div>
@@ -379,28 +373,28 @@ const ExplorePage = () => {
             <div className="text-center py-12"><Tv className="mx-auto h-16 w-16 text-muted-foreground mb-4" /><p className="text-xl text-muted-foreground">Nenhuma série encontrada.</p>{(searchQuery || selectedGenreIds.length > 0) && <p className="text-sm text-muted-foreground">Tente uma busca ou filtro diferente.</p>}</div>
           )}
         </TabsContent>
-
+        
         <TabsContent value="users" className="mt-6">
           {(isLoadingSearch || currentInitialLoadingState) ? renderSkeletons(6, 'user') : usersToDisplay.length > 0 ? (
             <motion.div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6" variants={containerVariants} initial="hidden" animate="visible">
               {usersToDisplay.map(user => (
                 <motion.div variants={itemVariants} key={`explore-user-${user.id}`}>
                   <Link to={`/profile/${user.username}`} className="block p-5 bg-card hover:bg-secondary rounded-xl transition-colors shadow-lg">
-                    <div className="flex flex-col items-center text-center">
-                      <Avatar className="w-20 h-20 mb-3 border-2 border-primary/50">
-                        <AvatarImage src={user.avatar_url} alt={user.name} />
-                        <AvatarFallback>{generateAvatarFallback(user.name || user.username)}</AvatarFallback>
-                      </Avatar>
-                      <p className="font-semibold text-lg text-foreground truncate w-full">{user.name || user.username}</p>
-                      <p className="text-sm text-muted-foreground truncate w-full">@{user.username}</p>
-                      {user.bio && <p className="text-xs text-muted-foreground mt-2 line-clamp-2">{user.bio}</p>}
-                    </div>
+                      <div className="flex flex-col items-center text-center">
+                          <Avatar className="w-20 h-20 mb-3 border-2 border-primary/50">
+                              <AvatarImage src={user.avatar_url} alt={user.name}/>
+                              <AvatarFallback>{generateAvatarFallback(user.name || user.username)}</AvatarFallback>
+                          </Avatar>
+                          <p className="font-semibold text-lg text-foreground truncate w-full">{user.name || user.username}</p>
+                          <p className="text-sm text-muted-foreground truncate w-full">@{user.username}</p>
+                          {user.bio && <p className="text-xs text-muted-foreground mt-2 line-clamp-2">{user.bio}</p>}
+                      </div>
                   </Link>
                 </motion.div>
               ))}
             </motion.div>
           ) : (
-            <div className="text-center py-12"><Users className="mx-auto h-16 w-16 text-muted-foreground mb-4" /><p className="text-xl text-muted-foreground">Nenhum usuário encontrado.</p>{searchQuery && <p className="text-sm text-muted-foreground">Tente uma busca diferente.</p>}</div>
+             <div className="text-center py-12"><Users className="mx-auto h-16 w-16 text-muted-foreground mb-4" /><p className="text-xl text-muted-foreground">Nenhum usuário encontrado.</p>{searchQuery && <p className="text-sm text-muted-foreground">Tente uma busca diferente.</p>}</div>
           )}
         </TabsContent>
       </Tabs>
