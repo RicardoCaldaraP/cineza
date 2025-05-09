@@ -154,7 +154,13 @@ const ExplorePage = () => {
         let results, totalPages;
         if (isSearching) {
           const tmdbRes = await searchTMDB(searchQuery.trim(), page);
-          results = tmdbRes.results; // <- Removido o filtro que estava bugando
+          results = tmdbRes.results;
+
+          // Só filtra por media_type se vier no resultado
+          if (results.length > 0 && results[0].media_type) {
+            results = results.filter(item => item.media_type === activeTab);
+          }
+
           totalPages = tmdbRes.totalPages;
         }
         else { // Filtering by genre, no search query
