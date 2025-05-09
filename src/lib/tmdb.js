@@ -30,9 +30,7 @@ export const getTrendingAllWeek = (page = 1) => tmdbFetch('trending/all/week', {
 export const getMovieDetails = (movieId) => tmdbFetch(`movie/${movieId}`, { append_to_response: 'credits,videos,images,recommendations,external_ids' });
 export const getTVShowDetails = (tvShowId) => tmdbFetch(`tv/${tvShowId}`, { append_to_response: 'credits,videos,images,recommendations,external_ids' });
 
-export const searchMedia = (query, page = 1, type = 'multi') =>
-  tmdbFetch(`search/${type}`, { query, page, include_adult: false });
-
+export const searchMedia = (query, page = 1) => tmdbFetch('search/multi', { query, page, include_adult: false });
 
 export const getPosterPath = (path, size = 'w500') => path ? `${TMDB_IMAGE_BASE_URL}${size}${path}` : null;
 export const getBackdropPath = (path, size = 'w1280') => path ? `${TMDB_IMAGE_BASE_URL}${size}${path}` : null;
