@@ -71,12 +71,12 @@ export const AuthProvider = ({ children }) => {
           switch (event) {
             case 'SIGNED_IN':
             case 'USER_UPDATED':
-              //setLoading(true);
+              setLoading(true);
               //await processSession(supabaseSession, false);
               setLoading(false);
               break;
             case 'TOKEN_REFRESHED':
-              //await processSession(supabaseSession, false);
+              await processSession(supabaseSession, false);
               setLoading(false); 
               break;
             case 'SIGNED_OUT':
@@ -120,7 +120,7 @@ export const AuthProvider = ({ children }) => {
 
   const signup = async (email, password, userData) => {
     setLoading(true);
-    const { data, error } = supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
