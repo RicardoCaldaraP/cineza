@@ -19,14 +19,14 @@ const SignUpPage = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [needsConfirmation, setNeedsConfirmation] = useState(false);
-  const { signUp } = useAuth(); // Corrigido de signup para signUp
+  const { signup } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    //setIsLoading(true);
+    setIsLoading(true);
     setNeedsConfirmation(false);
 
     if (password !== confirmPassword) {
@@ -43,7 +43,7 @@ const SignUpPage = () => {
        return;
     }
 
-    const result = signUp(email, password, { name, username }); // Corrigido de signup para signUp
+    const result = await signup(email, password, { name, username });
     setIsLoading(false);
 
     if (result.success) {
@@ -55,12 +55,13 @@ const SignUpPage = () => {
           duration: 10000 
         });
       } else {
+        // Se a confirmação de email estiver desabilitada no Supabase, o usuário já está logado
         toast({ title: "Cadastro realizado com sucesso!", description: `Bem-vindo, ${name || username}!` });
         navigate('/'); 
       }
     } else {
-      setError(result.message || 'Ocorreu um erro desconhecido.');
-      toast({ title: "Erro no Cadastro", description: result.message || 'Tente novamente.', variant: "destructive" });
+      setError(result.message);
+      toast({ title: "Erro no Cadastro", description: result.message, variant: "destructive" });
     }
   };
 
@@ -88,17 +89,7 @@ const SignUpPage = () => {
             </CardContent>
              <CardFooter className="flex flex-col items-center text-sm">
                 <p>Não recebeu o e-mail?</p>
-                <Button variant="link" onClick={async () => {
-                  toast({ title: "Reenviando e-mail...", description: "Aguarde um momento."});
-                  // Adicionar lógica de reenviar email se necessário.
-                  // Por enquanto, apenas um placeholder.
-                  // Idealmente, você teria uma função no AuthContext para isso.
-                  // Ex: await resendConfirmationEmail(email);
-                  // Por agora, vamos simular um reenvio.
-                  setTimeout(() => {
-                     toast({ title: "E-mail de confirmação reenviado!", description: "Verifique sua caixa de entrada."});
-                  }, 2000);
-                }} className="px-0">
+                <Button variant="link" onClick={() => {/* Adicionar lógica de reenviar email se necessário */}} className="px-0">
                   Reenviar e-mail de confirmação
                 </Button>
              </CardFooter>
@@ -169,7 +160,7 @@ const SignUpPage = () => {
                 <Input
                   id="password"
                   type="password"
-                  placeholder="Senha (mín. 6 caracteres)"
+                  placeholder="******** (mín. 6 caracteres)"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -181,7 +172,7 @@ const SignUpPage = () => {
                 <Input
                   id="confirmPassword"
                   type="password"
-                  placeholder="Senha"
+                  placeholder="********"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
