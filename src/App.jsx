@@ -35,7 +35,7 @@ const AppContent = () => {
   return (
     <div className={`min-h-screen flex flex-col ${showNavbar ? 'md:flex-row' : ''}`}>
       {showNavbar && <Navbar />}
-      <main className={`flex-1 ${showNavbar ? 'md:ml-20 lg:ml-32' : ''} overflow-y-auto pb-[60px] md:pb-0`}>
+      <main className={`flex-1 ${showNavbar ? 'md:ml-20 lg:ml-32' : ''} overflow-y-auto pb-[100px] md:pb-0`}>
 
         <AnimatePresence mode="wait">
           <motion.div
