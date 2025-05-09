@@ -19,9 +19,9 @@ import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import NotFoundPage from '@/pages/NotFoundPage';
 
 const AppContent = () => {
-  const { currentUser, loading } = useAuth(); 
+  const { currentUser, loading } = useAuth();
   const location = useLocation();
-  
+
   const showNavbar = currentUser && location.pathname !== '/login' && location.pathname !== '/signup';
 
   if (loading && location.pathname !== '/login' && location.pathname !== '/signup') {
@@ -35,7 +35,8 @@ const AppContent = () => {
   return (
     <div className={`min-h-screen flex flex-col ${showNavbar ? 'md:flex-row' : ''}`}>
       {showNavbar && <Navbar />}
-      <main className={`flex-1 ${showNavbar ? 'md:ml-20 lg:ml-32' : ''} overflow-y-auto`}>
+      <main className={`flex-1 ${showNavbar ? 'md:ml-20 lg:ml-32' : ''} overflow-y-auto pb-[60px] md:pb-0`}>
+
         <AnimatePresence mode="wait">
           <motion.div
             key={location.pathname}
@@ -53,11 +54,11 @@ const AppContent = () => {
               <Route path="/explore" element={<ProtectedRoute><ExplorePage /></ProtectedRoute>} />
               <Route path="/watchlist" element={<ProtectedRoute><WatchlistPage /></ProtectedRoute>} />
               <Route path="/post" element={<ProtectedRoute><PostReviewPage /></ProtectedRoute>} />
-              <Route path="/item/:type/:id" element={<ProtectedRoute><MoviePage /></ProtectedRoute>} /> 
+              <Route path="/item/:type/:id" element={<ProtectedRoute><MoviePage /></ProtectedRoute>} />
               <Route path="/movie/:id" element={<ProtectedRoute><MoviePage /></ProtectedRoute>} />
               <Route path="/profile/:username" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
               <Route path="/profile/edit" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
-              
+
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </motion.div>
