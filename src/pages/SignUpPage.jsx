@@ -43,7 +43,7 @@ const SignUpPage = () => {
        return;
     }
 
-    const result = await signUp(email, password, { name, username }); // Corrigido de signup para signUp
+    const result = signUp(email, password, { name, username }); // Corrigido de signup para signUp
     setIsLoading(false);
 
     if (result.success) {
@@ -169,7 +169,7 @@ const SignUpPage = () => {
                 <Input
                   id="password"
                   type="password"
-                  placeholder="******** (mín. 6 caracteres)"
+                  placeholder="Senha (mín. 6 caracteres)"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -181,7 +181,7 @@ const SignUpPage = () => {
                 <Input
                   id="confirmPassword"
                   type="password"
-                  placeholder="********"
+                  placeholder="Senha"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
