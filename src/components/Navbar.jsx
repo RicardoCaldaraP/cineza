@@ -47,7 +47,7 @@ const Navbar = () => {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border z-10 h-14 md:relative md:h-screen md:w-64 md:border-t-0 md:border-r">
-      <div className="flex items-center justify-around h-full px-2 md:flex-col md:justify-start md:h-full md:p-4">
+      <div className="flex items-center justify-around h-full md:flex-col md:justify-start md:h-full md:p-4">
         <Link
           to={currentUser ? "/" : "/login"}
           className="hidden md:flex items-center gap-2 p-4 mb-6"
