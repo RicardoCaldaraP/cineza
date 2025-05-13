@@ -87,26 +87,37 @@ const Navbar = () => {
         {currentUser ? (
           <div className="hidden md:mt-auto md:flex md:flex-col md:space-y-4">
             <div className="p-4 bg-card rounded-lg">
-              <Link
-                to={`/profile/${currentUser.username}`}
-                className="flex items-center gap-3"
-              >
-                <Avatar>
-                  <AvatarImage
-                    src={currentUser.avatar}
-                    alt={currentUser.name}
-                  />
-                  <AvatarFallback>
-                    {currentUser.name ? currentUser.name.charAt(0) : "U"}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="font-medium">{currentUser.name || "Usuário"}</p>
-                  <p className="text-xs text-muted-foreground">
-                    @{currentUser.username || "username"}
-                  </p>
-                </div>
-              </Link>
+              <div className="flex items-center justify-between gap-3">
+                <Link
+                  to={`/profile/${currentUser.username}`}
+                  className="flex items-center gap-3 flex-1"
+                >
+                  <Avatar>
+                    <AvatarImage
+                      src={currentUser.avatar}
+                      alt={currentUser.name}
+                    />
+                    <AvatarFallback>
+                      {currentUser.name ? currentUser.name.charAt(0) : "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="font-medium">
+                      {currentUser.name || "Usuário"}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      @{currentUser.username || "username"}
+                    </p>
+                  </div>
+                </Link>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-muted-foreground hover:text-primary"
+                >
+                  <Bell className="h-5 w-5" />
+                </Button>
+              </div>
             </div>
 
             <Button
