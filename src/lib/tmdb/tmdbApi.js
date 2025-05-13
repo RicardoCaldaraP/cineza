@@ -1,5 +1,5 @@
 const TMDB_API_KEY =
-  "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4NGE3NThlMGEwOGMyYjVkNDFmMDM4ZjZhNDRmNTkzYyIsIm5iZiI6MTc0NjQ2NDAxMC40OCwic3ViIjoiNjgxOGVkMGE0ODZhZDY4ZmViNjQwMTYzIiwic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.UbpCJM8JyZdiAWF7NcQLuVSoTkknoPdJ1V8HA9HuQwkf6a44f593c";
+  "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4NGE3NThlMGEwOGMyYjVkNDFmMDM4ZjZhNDRmNTkzYyIsIm5iZiI6MTc0NjQ2NDAxMC40OCwic3ViIjoiNjgxOGVkMGE0ODZhZDY4ZmViNjQwMTYzIiwic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.UbpCJM8JyZdiAWF7NcQLuVSoTkknoPdJ1V8HA9HuQwk";
 const TMDB_BASE_URL = "https://api.themoviedb.org/3";
 
 export const fetchFromTMDB = async (endpoint, params = {}) => {
